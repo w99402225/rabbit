@@ -1,0 +1,28 @@
+16:59:58[main] INFO  cn.mikulink.rabbitbot.RabbitbotApplication - Starting RabbitbotApplication using Java 11.0.11 on DESKTOP-QCG5F7A with PID 70616 (F:\git\Git\RabbitBot_RE\target\classes started by 潘谦睿 in F:\git\Git\RabbitBot_RE)
+16:59:58[main] INFO  cn.mikulink.rabbitbot.RabbitbotApplication - No active profile set, falling back to default profiles: default
+17:00:00[main] INFO  cn.mikulink.rabbitbot.RabbitbotApplication - Started RabbitbotApplication in 2.163 seconds (JVM running for 5.371)
+17:00:00[scheduling-1] ERROR cn.mikulink.rabbitbot.tasks.JobTimeRabbit - 报时兔子 消息发送异常java.lang.NullPointerException
+java.lang.NullPointerException: null
+	at cn.mikulink.rabbitbot.tasks.JobTimeRabbit.timeRabbit(JobTimeRabbit.java:107)
+	at cn.mikulink.rabbitbot.tasks.JobTimeRabbit.execute(JobTimeRabbit.java:71)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at org.springframework.scheduling.concurrent.ReschedulingRunnable.run(ReschedulingRunnable.java:95)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+17:00:18[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到其他消息} userId:2408922824,userNick:八千三八千三,msg:[mirai:source:[148948],[640967221]]摆了
+17:00:18[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到群消息} groupId:738585469,userNick:八千三八千三,userId:2408922824,msg:%[mirai:source:[148948],[640967221]]摆了,groupName:礼部大牢👆,userCard:群问号人
+17:00:20[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到其他消息} userId:2408922824,userNick:八千三八千三,msg:[mirai:source:[148949],[1495623475]][mirai:image:{82DB120C-F551-F9B6-F035-DDC2CE174DF9}.jpg]
+17:00:20[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到群消息} groupId:738585469,userNick:八千三八千三,userId:2408922824,msg:%[mirai:source:[148949],[1495623475]][mirai:image:{82DB120C-F551-F9B6-F035-DDC2CE174DF9}.jpg],groupName:礼部大牢👆,userCard:群问号人
+17:00:38[DefaultDispatcher-worker-4] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到其他消息} userId:1819232580,userNick:至,msg:[mirai:source:[148950],[1422514874]][mirai:image:{3A83776E-0211-64EB-9D6F-2DE6CCA88FE0}.jpg]
+17:00:38[DefaultDispatcher-worker-4] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到群消息} groupId:738585469,userNick:至,userId:1819232580,msg:%[mirai:source:[148950],[1422514874]][mirai:image:{3A83776E-0211-64EB-9D6F-2DE6CCA88FE0}.jpg],groupName:礼部大牢👆,userCard:
+17:01:29[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到其他消息} userId:643112206,userNick:七羽千海,msg:[mirai:source:[148951],[-1703808349]][mirai:image:{BE205817-4680-68CD-A73B-74D071A8EA30}.jpg]
+17:01:29[DefaultDispatcher-worker-6] INFO  cn.mikulink.rabbitbot.event.MessageEvents - {接收到群消息} groupId:738585469,userNick:七羽千海,userId:643112206,msg:%[mirai:source:[148951],[-1703808349]][mirai:image:{BE205817-4680-68CD-A73B-74D071A8EA30}.jpg],groupName:礼部大牢👆,userCard:
