@@ -2,6 +2,7 @@ package cn.mikulink.rabbitbot.event;
 
 
 import cn.mikulink.rabbitbot.command.*;
+import cn.mikulink.rabbitbot.constant.ConstantBlackGroup;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
 import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
@@ -138,6 +139,9 @@ public class MessageEvents extends SimpleListenerHost {
         Member sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
 
+        if (ConstantBlackGroup.BLACK_GROUP.contains(sender.getGroup().getId())) {
+            return ListeningStatus.LISTENING;
+        }
         logger.info("{接收到群消息} groupId:{},userNick:{},userId:{},msg:%{},groupName:{},userCard:{}",
                 event.getGroup().getId(), sender.getNick(), sender.getId(), event.getMessage().toString(), event.getGroup().getName(), event.getSender().getNameCard());
 
@@ -146,6 +150,7 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
 
+
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
             // 非指令处理其他业务
@@ -153,7 +158,7 @@ public class MessageEvents extends SimpleListenerHost {
             keyWordService.keyWordMatchGroup(event);
             return ListeningStatus.LISTENING;
         }
-        GroupCommand command = (GroupCommand) commandConfig.getCommand(oriMsg, commandConfig.groupCommands);
+        GroupCommand command = (GroupCommand) commandConfig.getCommand(oriMsg, CommandConfig.groupCommands);
         if (command == null) {
             return ListeningStatus.LISTENING;
         }
@@ -204,7 +209,7 @@ public class MessageEvents extends SimpleListenerHost {
             return ListeningStatus.LISTENING;
         }
 
-        TempMessageCommand command = (TempMessageCommand) commandConfig.getCommand(oriMsg, commandConfig.tempMsgCommands);
+        TempMessageCommand command = (TempMessageCommand) commandConfig.getCommand(oriMsg, CommandConfig.tempMsgCommands);
         if (command == null) {
             return ListeningStatus.LISTENING;
         }
@@ -229,7 +234,9 @@ public class MessageEvents extends SimpleListenerHost {
         String[] args = msg.trim().split(" ");
         ArrayList<String> list = new ArrayList<>();
         for (String arg : args) {
-            if (StringUtil.isNotEmpty(arg)) list.add(arg);
+            if (StringUtil.isNotEmpty(arg)) {
+                list.add(arg);
+            }
         }
         list.remove(0);
         return list;

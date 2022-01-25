@@ -41,6 +41,8 @@ public class ConfigService {
     @Autowired
     private PetService petService;
     @Autowired
+    private BlackGroupService blackGroupService;
+    @Autowired
     private BlackListService blackListService;
     @Autowired
     private WeatherService weatherService;
@@ -73,6 +75,7 @@ public class ConfigService {
             tarotService.loadFile();
             //黑名单
             blackListService.loadFile();
+            blackGroupService.loadFile();
             //养成系统信息
             petService.loadPetInfo();
             //加载高的城市信息文件
