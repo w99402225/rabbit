@@ -8,6 +8,7 @@ import cn.mikulink.rabbitbot.service.KeyWordService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.Friend;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
@@ -57,9 +58,14 @@ public class MessageEvents extends SimpleListenerHost {
     @NotNull
     @EventHandler
     public ListeningStatus onMessage(@NotNull MessageEvent event) throws Exception {
+        //黑名单群，忽略一切指令
+        if (event.getSubject() instanceof Group){
+            if (ConstantBlackGroup.BLACK_GROUP.contains(event.getSubject().getId())) {
+                return ListeningStatus.LISTENING;
+            }
+        }
         User sender = event.getSender();
         String oriMsg = event.getMessage().contentToString();
-
         logger.info("{接收到其他消息} userId:{},userNick:{},msg:{}", sender.getId(), sender.getNick(), event.getMessage().toString());
 
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
@@ -147,6 +153,9 @@ public class MessageEvents extends SimpleListenerHost {
 
         //黑名单，用来防止和其他机器人死循环响应，或者屏蔽恶意人员
         if (ConstantBlackList.BLACK_LIST.contains(sender.getId())) {
+            return ListeningStatus.LISTENING;
+        }
+        if (ConstantBlackGroup.BLACK_GROUP.contains(sender.getGroup().getId())) {
             return ListeningStatus.LISTENING;
         }
 

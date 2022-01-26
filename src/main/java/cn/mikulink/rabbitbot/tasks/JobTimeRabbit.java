@@ -85,7 +85,7 @@ public class JobTimeRabbit {
 //        refreshWeixinAppCookie();
 
         //代理检测
-//        proxyCheck();
+        proxyCheck();
 
         //养成系统数据刷新
         petRefresh();

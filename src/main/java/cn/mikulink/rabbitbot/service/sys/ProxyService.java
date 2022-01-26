@@ -25,7 +25,7 @@ public class ProxyService {
 
     @Value("${proxy.address:127.0.0.1}")
     private String proxyAddress;
-    @Value("${proxy.prot:31051}")
+    @Value("${proxy.prot:33210}")
     private Integer proxyProt;
 
     @Autowired
