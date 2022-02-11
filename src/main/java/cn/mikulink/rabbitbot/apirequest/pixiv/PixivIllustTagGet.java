@@ -28,6 +28,7 @@ import java.util.Map;
 public class PixivIllustTagGet extends BaseRequest {
     //根据tag搜索图片
     private static final String URL = "https://www.pixiv.net/ajax/search/illustrations/";
+//    private static final String URL1 = "https://www.pixiv.net/ajax/search/artworks/";
 
     /**
      * 关键词
@@ -43,7 +44,7 @@ public class PixivIllustTagGet extends BaseRequest {
     /**
      * 可能是涉及R18什么的
      */
-    private String mode = "all";
+    private String mode = "r18";
     /**
      * 搜索模式
      */
@@ -74,6 +75,22 @@ public class PixivIllustTagGet extends BaseRequest {
         addParam();
         //爬虫获取排行榜信息
         byte[] resultBytes = HttpsUtil.doGet(URL + URLEncoder.encode(word, "UTF-8") + HttpUtil.parseUrlEncode(param), proxy);
+        body = new String(resultBytes);
+    }
+
+    /**
+     * 执行请求
+     *
+     * @throws IOException 所有异常上抛，由业务处理
+     */
+    public void doRequestR18() throws IOException {
+        //拼装参数
+        addParamR18();
+        //爬虫获取排行榜信息
+        byte[] resultBytes = HttpsUtil.doGet(URL + URLEncoder.encode(word, "UTF-8") +"%20r18"+ HttpUtil.parseUrlEncode(param).replaceAll("\\+","%20"), proxy);
+        System.out.print(param+"//");
+        System.out.print(HttpUtil.parseUrlEncode(param).replaceAll("\\+","%20")+"//");
+        System.out.println(URL + URLEncoder.encode(word, "UTF-8") +"%20r18"+ HttpUtil.parseUrlEncode(param).replaceAll("\\+","%20"));
         body = new String(resultBytes);
     }
 
@@ -112,6 +129,16 @@ public class PixivIllustTagGet extends BaseRequest {
         param.put("s_mode", s_mode);
         param.put("mode", mode);
         param.put("type", type);
+        param.put("p", p);
+    }
+
+    //拼装参数
+    private void addParamR18() {
+        param.put("word", word+" r18");
+        param.put("order", order);
+        param.put("s_mode", "s_tag");
+        param.put("mode", mode);
+        param.put("type", "all");
         param.put("p", p);
     }
 }

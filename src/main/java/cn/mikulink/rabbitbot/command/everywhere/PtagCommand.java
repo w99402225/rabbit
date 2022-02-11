@@ -36,7 +36,7 @@ public class PtagCommand extends BaseEveryWhereCommand {
     //操作间隔 账号，操作时间戳
     public static Map<Long, Long> PIXIV_TAG_SPLIT_MAP = new HashMap<>();
     //操作间隔
-    public static final Long PIXIV_TAG_SPLIT_TIME = 1000L * 60;
+    public static final Long PIXIV_TAG_SPLIT_TIME = 1000L * 20;
     public static final String PIXIV_TAG_SPLIT_ERROR = "[%s]%s秒后可以使用tag搜索";
 
     @Autowired

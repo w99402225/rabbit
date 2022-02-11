@@ -70,6 +70,7 @@ public class PixivService {
         }
         //根据pid获取图片列表
         PixivIllustGet request = new PixivIllustGet(pid);
+        request.getHeader().put("cookie", pixivCookie);
         request.setProxy(proxyService.getProxy());
         request.doRequest();
         return request.getPixivImageInfo();
@@ -86,10 +87,12 @@ public class PixivService {
     public PixivImageInfo getPixivIllustByTag(String tag) throws RabbitException, IOException {
         //1.查询这个tag下的总结果
         PixivIllustTagGet request = new PixivIllustTagGet();
+        request.getHeader().put("cookie", pixivCookie);
         request.setWord(tag);
         request.setP(1);
         request.setProxy(proxyService.getProxy());
         request.doRequest();
+//        request.doRequestR18();
         //总结果数量
         int total = request.getTotal();
         if (0 >= total) {
@@ -112,47 +115,13 @@ public class PixivService {
 
         //获取该页数的数据
         request = new PixivIllustTagGet();
+        request.getHeader().put("cookie", pixivCookie);
         request.setWord(tag);
         request.setP(randomPage);
         request.setProxy(proxyService.getProxy());
         request.doRequest();
+//        request.doRequestR18();
         List<PixivImageInfo> responses = request.parseImageList();
-
-        //todo 页面上没有作品评分，如果真做就需要去获取每个pid的评分，这一页就是60个pid，那就是近乎瞬间60次页面请求，也需要保存60个Obj
-        //累积得分
-//        Integer scoredCount = 0;
-//        Map<Long, Integer> scoredMap = new HashMap<>();
-//        Map<Object, Double> additionMap = new HashMap<>();
-//        Map<Long, ImjadPixivResponse> imgRspMap = new HashMap<>();
-//
-//        for (PixivImageInfo response : responses) {
-//            //r18过滤
-//            if (1 == response.getXRestrict()) {
-//                String configR18 = ConstantConfig.common_config.get(ConstantConfig.CONFIG_R18);
-//                if (StringUtil.isEmpty(configR18) || ConstantCommon.OFF.equalsIgnoreCase(configR18)) {
-//                    continue;
-//                }
-//            }
-//
-//            Integer scored = response.getStats().getScored_count();
-//            scoredCount += scored;
-//            scoredMap.put(response.getId(), scored);
-//            imgRspMap.put(response.getId(), response);
-//        }
-//        if (0 >= scoredMap.size()) {
-//            return new ReString(false, ConstantPixiv.PIXIV_IMAGE_TAG_ALL_R18);
-//        }
-//
-//        //计算权重
-//        for (Long pixivId : scoredMap.keySet()) {
-//            Integer score = scoredMap.get(pixivId);
-//            //结果肯定介于0-1之间，然后换算成百分比，截取两位小数
-//            Double addition = NumberUtil.keepDecimalPoint((score * 1.0) / scoredCount * 100.0, 2);
-//            additionMap.put(pixivId, addition);
-//        }
-//
-//        //根据权重随机出一个元素
-//        Object obj = RandomUtil.rollObjByAddition(additionMap);
 
         PixivImageInfo pixivImageInfo = RandomUtil.rollObjFromList(responses);
 

@@ -42,11 +42,12 @@ public class RPCommand extends BaseEveryWhereCommand {
         String groupUserName = rabbitBotService.getUserName(subject, sender);
 
         //rp 与人物属性的运气值对齐 问题就是可能不会出现0和100的运气了
-        int rp = statisticsService.getPlayerLUCK(groupUserName);
+//        int rp = statisticsService.getPlayerLUCK(groupUserName);
         //如果是99直接当做100吧，弥补下没有100封顶的遗憾
-        if (rp == 99) {
-            rp = 100;
-        }
+//        if (rp == 99) {
+//            rp = 100;
+//        }
+        int rp = (int) (Math.random()*100);
 
         //可以随机点装饰性语句
         String msgEx = getMsgEx(rp);

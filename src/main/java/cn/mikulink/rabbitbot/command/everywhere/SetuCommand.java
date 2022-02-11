@@ -88,9 +88,9 @@ public class SetuCommand extends BaseEveryWhereCommand {
         ConstantPixiv.SETU_PID_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
 
         try {
-            //Pixiv 和 MirKoi各5成概率 反正他们只要有色图看就行
+            //1张使用Pixiv，多张使用mirlkoi
             //如果请求的色图数量超过1张，则不使用pixiv，因为太慢了
-            boolean isPixiv = setuCount == 1 && RandomUtil.rollBoolean(0);
+            boolean isPixiv = setuCount == 1;
             if (isPixiv) {
                 PixivImageInfo pixivImageInfo = setuService.getSetu();
                 pixivImageInfo.setSender(sender);

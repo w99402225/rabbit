@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.command.everywhere;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
+import cn.mikulink.rabbitbot.constant.ConstantBlackGroup;
 import cn.mikulink.rabbitbot.constant.ConstantWorld;
 import cn.mikulink.rabbitbot.entity.CommandProperties;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
@@ -82,7 +83,9 @@ public class WorldCommand extends BaseEveryWhereCommand {
 //            if (!reStringSwitch.isSuccess()) {
 //                continue;
 //            }
-
+            if (ConstantBlackGroup.BLACK_GROUP.contains(group.getId())){
+                continue;
+            }
             //发送消息
             group.sendMessage(resultMsg);
         }
