@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.event;
 
 
+import cn.mikulink.rabbitbot.constant.ConstantBlackGroup;
 import cn.mikulink.rabbitbot.service.GroupNoticeService;
 import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.RabbitBotService;
@@ -76,6 +77,9 @@ public class GroupEvents extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus onMemberJoinGroup(@NotNull MemberJoinEvent.Active event) {
         Group group = event.getGroup();
+        if (ConstantBlackGroup.BLACK_GROUP.contains(group.getId())) {
+            return ListeningStatus.LISTENING;
+        }
         User sender = event.getMember();
         logger.info("{新增群员_主动加群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
         groupMemberJoinMsg(group, sender);
@@ -92,6 +96,9 @@ public class GroupEvents extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus onMemberJoinGroup(@NotNull MemberJoinEvent.Invite event) {
         Group group = event.getGroup();
+        if (ConstantBlackGroup.BLACK_GROUP.contains(group.getId())) {
+            return ListeningStatus.LISTENING;
+        }
         User sender = event.getMember();
         logger.info("{新增群员_被邀请加群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
         groupMemberJoinMsg(group, sender);
@@ -135,6 +142,9 @@ public class GroupEvents extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus onMemberLeaveGroup(@NotNull MemberLeaveEvent.Quit event) {
         Group group = event.getGroup();
+        if (ConstantBlackGroup.BLACK_GROUP.contains(group.getId())) {
+            return ListeningStatus.LISTENING;
+        }
         User sender = event.getMember();
         logger.info("{群员离群_主动离群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
         groupMemberLeaveMsg(group, sender);
@@ -151,6 +161,9 @@ public class GroupEvents extends SimpleListenerHost {
     @EventHandler
     public ListeningStatus onMemberLeaveGroup(@NotNull MemberLeaveEvent.Kick event) {
         Group group = event.getGroup();
+        if (ConstantBlackGroup.BLACK_GROUP.contains(group.getId())) {
+            return ListeningStatus.LISTENING;
+        }
         User sender = event.getMember();
         logger.info("{群员离群_被踢出群} userId:{},userNick:{},groupId:{},groupName:{}", sender.getId(), sender.getNick(), group.getId(), group.getName());
         groupMemberLeaveMsg(group, sender);

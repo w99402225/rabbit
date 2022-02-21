@@ -37,7 +37,7 @@ public class ConstantPixiv extends ConstantCommon {
     public static final String PIXIV_ID_GET_ERROR_GROUP_MESSAGE = "根据P站图片id获取信息异常";
 
     public static final String PIXIV_CONFIG_IMAGES_SHOW_COUNT = "pixivImagesShowCount";
-    public static final String PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT = "3";
+    public static final String PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT = "10";
     public static final String PIXIV_IMAGES_NOT_LEGAL = "这不是一个多图Pid";
 
     //p站tag相关

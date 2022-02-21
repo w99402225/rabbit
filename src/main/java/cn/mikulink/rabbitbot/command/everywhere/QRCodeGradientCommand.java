@@ -95,7 +95,7 @@ public class QRCodeGradientCommand extends BaseEveryWhereCommand {
             }
 
             byte[] qrBytes = QRCodeUtil.createGradientColorQRCodeByte(qrContext.toString(), onColorStart, onColorEnd, logoUrl);
-            return subject.uploadImage(ExternalResource.create(qrBytes));
+            return subject.uploadImage(ExternalResource.create(qrBytes).toAutoCloseable());
         } catch (Exception ex) {
             logger.error("渐变二维码转化失败", ex);
             return new PlainText(ConstantQRCode.QRCODE_FAIL);

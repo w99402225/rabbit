@@ -298,8 +298,8 @@ public class PixivService {
      * @return 插画列表
      */
     public List<PixivImageInfo> getPixivIllustByUserId(String pixivUserId, Integer count) throws RabbitApiException, IOException {
-        //默认数量为3
-        if (null == count) count = 3;
+        //默认数量为10
+        if (null == count) count = 10;
         List<PixivImageInfo> pixivImageInfos = new ArrayList<>();
 
         //1.获取该用户下所有插画id
@@ -405,7 +405,7 @@ public class PixivService {
     public List<String> downloadPixivImgs(Long pixivId) throws IOException {
         List<String> localImagesPath = new ArrayList<>();
 
-        //查看多图展示数量配置，默认为3
+        //查看多图展示数量配置，默认为10
         String pixiv_config_images_show_count = ConstantCommon.common_config.get(ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT);
         if (!NumberUtil.isNumberOnly(pixiv_config_images_show_count)) {
             pixiv_config_images_show_count = ConstantPixiv.PIXIV_CONFIG_IMAGES_SHOW_COUNT_DEFAULT;

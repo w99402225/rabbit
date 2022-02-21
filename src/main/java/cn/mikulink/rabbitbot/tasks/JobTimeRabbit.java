@@ -1,6 +1,7 @@
 package cn.mikulink.rabbitbot.tasks;
 
 import cn.mikulink.rabbitbot.bot.RabbitBot;
+import cn.mikulink.rabbitbot.constant.ConstantBlackGroup;
 import cn.mikulink.rabbitbot.constant.ConstantCommon;
 import cn.mikulink.rabbitbot.constant.ConstantPixiv;
 import cn.mikulink.rabbitbot.entity.ReString;
@@ -177,6 +178,9 @@ public class JobTimeRabbit {
             //给每个群发送消息
             ContactList<Group> groupList = RabbitBot.getBot().getGroups();
             for (Group groupInfo : groupList) {
+                if (ConstantBlackGroup.BLACK_GROUP.contains(groupInfo.getId())){
+                    continue;
+                }
                 //检查功能开关
                 ReString reStringSwitch = switchService.switchCheck(null, groupInfo, "setuday");
                 if (!reStringSwitch.isSuccess()) {

@@ -4,13 +4,18 @@ package cn.mikulink.rabbitbot.event;
 import cn.mikulink.rabbitbot.command.*;
 import cn.mikulink.rabbitbot.constant.ConstantBlackGroup;
 import cn.mikulink.rabbitbot.constant.ConstantBlackList;
+import cn.mikulink.rabbitbot.constant.ConstantImage;
+import cn.mikulink.rabbitbot.constant.ConstantPixiv;
+import cn.mikulink.rabbitbot.entity.apirequest.saucenao.SaucenaoSearchInfoResult;
+import cn.mikulink.rabbitbot.entity.pixiv.PixivImageInfo;
+import cn.mikulink.rabbitbot.exceptions.RabbitException;
+import cn.mikulink.rabbitbot.service.DanbooruService;
+import cn.mikulink.rabbitbot.service.ImageService;
 import cn.mikulink.rabbitbot.service.KeyWordService;
+import cn.mikulink.rabbitbot.service.PixivService;
 import cn.mikulink.rabbitbot.utils.StringUtil;
 import kotlin.coroutines.CoroutineContext;
-import net.mamoe.mirai.contact.Friend;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
@@ -18,14 +23,21 @@ import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.event.events.TempMessageEvent;
+import net.mamoe.mirai.internal.message.OnlineImage;
 import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description: 消息事件处理, 不同于其他事件, 消息事件中进一步封装了指令
@@ -36,10 +48,18 @@ import java.util.ArrayList;
 public class MessageEvents extends SimpleListenerHost {
     private static final Logger logger = LoggerFactory.getLogger(MessageEvents.class);
 
+    //操作间隔 账号，操作时间戳
+    public static Map<Long, Long> PIXIV_SEARCH_SPLIT_MAP = new HashMap<>();
     @Autowired
     private CommandConfig commandConfig;
     @Autowired
     private KeyWordService keyWordService;
+    @Autowired
+    private ImageService imageService;
+    @Autowired
+    private PixivService pixivService;
+    @Autowired
+    private DanbooruService danbooruService;
 
 
     @Override
@@ -75,6 +95,24 @@ public class MessageEvents extends SimpleListenerHost {
 
         //是否指令模式
         if (!commandConfig.isCommand(oriMsg)) {
+            // 非指令处理其他业务
+            ArrayList<String> argsNoCommand = getArgsNoCommand(oriMsg);
+            if (argsNoCommand.get(0).equals("搜图")){
+                PIXIV_SEARCH_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
+                event.getSubject().sendMessage(new PlainText("请在600秒内发送图片"));
+            }
+            if (argsNoCommand.get(0).equals("[图片]")){
+                if (PIXIV_SEARCH_SPLIT_MAP.containsKey(sender.getId())){
+                    if ((System.currentTimeMillis()-PIXIV_SEARCH_SPLIT_MAP.get(sender.getId()))<600*1000){
+                        event.getSubject().sendMessage(new PlainText("["+sender.getNick()+"] 在搜了在搜了"));
+                        Message result = search(sender, getArgs(oriMsg), event.getMessage(), event.getSubject());
+                        if (result != null) {
+                            event.getSubject().sendMessage(result);
+                        }
+                    }
+                    PIXIV_SEARCH_SPLIT_MAP.remove(sender.getId());
+                }
+            }
             return ListeningStatus.LISTENING;
         }
         EverywhereCommand command = (EverywhereCommand) commandConfig.getCommand(oriMsg, CommandConfig.everywhereCommands);
@@ -251,4 +289,59 @@ public class MessageEvents extends SimpleListenerHost {
         return list;
     }
 
+    /**
+     * 从消息体中获得 用空格分割的参数
+     *
+     * @param msg 消息
+     * @return 分割出来的参数
+     */
+    private ArrayList<String> getArgsNoCommand(String msg) {
+        String[] args = msg.trim().split(" ");
+        ArrayList<String> list = new ArrayList<>();
+        for (String arg : args) {
+            if (StringUtil.isNotEmpty(arg)) {
+                list.add(arg);
+            }
+        }
+        return list;
+    }
+
+    private Message search(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject){
+        String imgUrl = ((OnlineImage) messageChain.get(1)).getOriginUrl();
+
+        if (StringUtil.isEmpty(imgUrl)) {
+            return new PlainText(ConstantImage.IMAGE_SEARCH_IMAGE_URL_PARSE_FAIL);
+        }
+        try {
+            SaucenaoSearchInfoResult searchResult = imageService.searchImgFromSaucenao(imgUrl);
+            if (null == searchResult) {
+                //没有符合条件的图片，识图失败
+                return new PlainText(ConstantImage.SAUCENAO_SEARCH_FAIL_PARAM);
+            }
+
+            //获取信息，并返回结果
+            if (5 == searchResult.getHeader().getIndex_id()) {
+                //pixiv
+                PixivImageInfo pixivImageInfo = pixivService.getPixivImgInfoById((long) searchResult.getData().getPixiv_id());
+                pixivImageInfo.setSender(sender);
+                pixivImageInfo.setSubject(subject);
+                return pixivService.parsePixivImgInfoByApiInfo(pixivImageInfo, searchResult.getHeader().getSimilarity());
+            } else {
+                //Danbooru
+                return danbooruService.parseDanbooruImgRequest(searchResult);
+            }
+        } catch (RabbitException rabEx) {
+            //业务异常，日志吃掉
+            return new PlainText(rabEx.getMessage());
+        } catch (FileNotFoundException fileNotFoundEx) {
+            logger.warn(ConstantPixiv.PIXIV_IMAGE_DELETE + fileNotFoundEx.toString());
+            return new PlainText(ConstantPixiv.PIXIV_IMAGE_DELETE);
+        } catch (SocketTimeoutException timeoutException) {
+            logger.error(ConstantImage.IMAGE_GET_TIMEOUT_ERROR + timeoutException.toString(), timeoutException);
+            return new PlainText(ConstantImage.IMAGE_GET_TIMEOUT_ERROR);
+        } catch (Exception ex) {
+            logger.error(ConstantImage.IMAGE_GET_ERROR + ex.toString(), ex);
+            return new PlainText(ConstantImage.IMAGE_GET_ERROR);
+        }
+    }
 }

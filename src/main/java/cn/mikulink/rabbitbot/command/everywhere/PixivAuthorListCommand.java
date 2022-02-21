@@ -36,15 +36,15 @@ public class PixivAuthorListCommand extends BaseEveryWhereCommand{
 
     @Override
     public CommandProperties properties() {
-        return new CommandProperties("AuthorList", "pixivauthor");
+        return new CommandProperties("AuthorList", "pauthor", "pixivauthor");
     }
 
     @Override
     public Message execute(User sender, ArrayList<String> args, MessageChain messageChain, Contact subject) {
         //权限限制
-        if (!rabbitBotService.isMaster(sender.getId())) {
-            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
-        }
+//        if (!rabbitBotService.isMaster(sender.getId())) {
+//            return new PlainText(RandomUtil.rollStrFromList(ConstantCommon.COMMAND_MASTER_ONLY));
+//        }
 
         if (null == args || args.size() == 0) {
             return new PlainText("[.pixivauthor (add,remove)]");

@@ -52,13 +52,13 @@ public class JobMain {
     @Scheduled(cron = "0 * * * * ?")
     public void execute() {
         //日常语句
-        freeTimeRabbit();
+//        freeTimeRabbit();
 
         //B站视频动态
-        biliDynamicSvrPush();
+//        biliDynamicSvrPush();
 
         //微博最新消息
-        weiboNews();
+//        weiboNews();
     }
 
     //日常兔子
