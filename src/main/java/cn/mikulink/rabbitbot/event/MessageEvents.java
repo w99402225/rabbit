@@ -99,7 +99,7 @@ public class MessageEvents extends SimpleListenerHost {
             ArrayList<String> argsNoCommand = getArgsNoCommand(oriMsg);
             if (argsNoCommand.get(0).equals("搜图")){
                 PIXIV_SEARCH_SPLIT_MAP.put(sender.getId(), System.currentTimeMillis());
-                event.getSubject().sendMessage(new PlainText("请在600秒内发送图片"));
+                event.getSubject().sendMessage(new PlainText("快把涩图发我（）"));
             }
             if (argsNoCommand.get(0).equals("[图片]")){
                 if (PIXIV_SEARCH_SPLIT_MAP.containsKey(sender.getId())){

@@ -44,7 +44,7 @@ public class PixivMyUserCommand extends BaseEveryWhereCommand {
     //操作间隔 账号，操作时间戳
     private static Map<Long, Long> PIXIV_USER_ID_SPLIT_MAP = new HashMap<>();
     //操作间隔
-    private static final Long PIXIV_USER_ID_SPLIT_TIME = 1000L * 10;
+    private static final Long PIXIV_USER_ID_SPLIT_TIME = 1000L * 30;
     private static final String PIXIV_USER_ID_SPLIT_ERROR = "[%s]%s秒后可以使用puid搜索";
 
     @Autowired
